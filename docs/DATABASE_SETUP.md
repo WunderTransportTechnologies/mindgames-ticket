@@ -97,6 +97,22 @@ npm run db:studio
 - **データベース接続**: `src/db/index.ts`
 - **Drizzle設定**: `drizzle.config.ts`
 
+### 実装済みテーブル
+
+プロジェクトには以下のテーブルが実装されています：
+
+#### 認証関連（Better Auth）
+- **user**: ユーザー基本情報
+  - id, name, email, emailVerified, image, createdAt, updatedAt
+- **account**: OAuth認証情報
+  - id, userId, accountId, providerId, accessToken, refreshToken, idToken, accessTokenExpiresAt, refreshTokenExpiresAt, scope, password, createdAt, updatedAt
+- **session**: セッション管理
+  - id, userId, token, expiresAt, ipAddress, userAgent, createdAt, updatedAt
+- **verification**: メール認証用
+  - id, identifier, value, expiresAt, createdAt, updatedAt
+
+詳細な設定は `docs/GOOGLE_OAUTH_SETUP.md` を参照してください。
+
 ### スキーマの変更手順
 
 1. `src/db/schema.ts` でスキーマを編集
