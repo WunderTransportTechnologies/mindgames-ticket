@@ -4,7 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## プロジェクト概要
 
-このリポジトリは GitHub を活用した開発ワークフローとプロジェクト管理のための基盤設定を提供します。
+mindgames団体のイベントチケット販売ECシステム。Next.js 15 (App Router) + TypeScript + Drizzle ORM (Neon PostgreSQL) で構築されたフルスタックアプリケーション。
+
+**技術スタック**: Next.js 15, TypeScript, Drizzle ORM, Neon, Better Auth (予定), Stripe (予定), Resend (予定), Vercel Blob (予定)
+
+**詳細**: [docs/TECH_STACK.md](docs/TECH_STACK.md), [docs/NEXT_STEPS.md](docs/NEXT_STEPS.md)
 
 ## 必須事項：GitHub ワークフロー
 
@@ -40,6 +44,67 @@ git add src/file1.ts src/file2.ts
 ```
 
 この制約の理由は意図しないファイルの混入を防ぐためです。
+
+## 開発コマンド
+
+### 開発サーバー
+```bash
+npm run dev              # Next.js開発サーバー起動 (http://localhost:3000)
+npm run build            # 本番ビルド
+npm run start            # 本番サーバー起動
+```
+
+### コード品質
+```bash
+npm run lint             # Biomeでリント
+npm run format           # Biomeでフォーマット
+npm run type-check       # TypeScript型チェック
+```
+
+### データベース (Drizzle ORM)
+```bash
+npm run db:push          # スキーマをDBに反映 (マイグレーション不要な開発時)
+npm run db:generate      # マイグレーションファイル生成
+npm run db:migrate       # マイグレーション実行
+npm run db:studio        # Drizzle Studio GUI起動 (https://local.drizzle.studio)
+```
+
+**重要**: データベーススキーマ変更時は `npm run db:push` を実行してNeonに反映すること。
+
+## アーキテクチャ
+
+### ディレクトリ構造
+```
+src/
+├── app/              # Next.js App Router (ページ・レイアウト)
+├── components/       # Reactコンポーネント (将来的にshadcn/ui含む)
+├── db/
+│   ├── index.ts      # Drizzle クライアント初期化
+│   └── schema.ts     # データベーススキーマ定義
+└── lib/              # ユーティリティ・ヘルパー
+    └── utils.ts      # shadcn/ui用ユーティリティ (cn関数)
+```
+
+### データベース設計
+- **ORM**: Drizzle ORM (型安全なTypeScript ORM)
+- **DB**: Neon (サーバーレスPostgreSQL)
+- **スキーマ**: `src/db/schema.ts` で定義 (現在はusersテーブルのみサンプル実装)
+- **接続**: `src/db/index.ts` でNeon HTTPクライアント経由で接続
+
+**スキーマ変更フロー**:
+1. `src/db/schema.ts` を編集
+2. `npm run db:push` でNeonに反映
+3. Drizzle Studioで確認: `npm run db:studio`
+
+### Next.js App Router構成
+- **Server Components**: デフォルトでサーバーコンポーネント (データフェッチに最適)
+- **Client Components**: `"use client"` ディレクティブで明示的に使用
+- **Server Actions**: フォーム処理・ミューテーションに使用予定
+
+### 環境変数
+- `.env.local`: ローカル開発用 (Gitにコミット禁止)
+- `DATABASE_URL`: Neon接続文字列 (必須)
+- 将来追加予定: `AUTH_SECRET`, `STRIPE_SECRET_KEY`, `RESEND_API_KEY`, `BLOB_READ_WRITE_TOKEN`
 
 ## 開発フロー
 
@@ -198,8 +263,19 @@ cp docs/adr/template.md docs/adr/2025-10-31-<PR番号>-<タイトル>.md
 **ステータス:**
 - `status: ready` / `status: in-progress` / `status: blocked`
 
+## 統合サービス (Phase 2で実装予定)
+
+次のフェーズで統合する外部サービス ([docs/NEXT_STEPS.md](docs/NEXT_STEPS.md)参照):
+1. **Better Auth** - 認証基盤 (`src/lib/auth.ts`に実装予定)
+2. **Stripe** - 決済処理 (`src/lib/stripe.ts`に実装予定)
+3. **Resend** - メール送信 (`src/lib/email.ts`に実装予定)
+4. **Vercel Blob** - ファイルストレージ (イベント画像・QRコード)
+
+各サービスの実装時は、必ずADRを作成すること。
+
 ## ペンディング項目
 
 将来的に導入予定:
 - CODEOWNERS（特定ファイルの自動レビュワー割り当て）
 - CI/CD 自動チェック（Lint、テスト、フォーマット）
+- テストフレームワーク (Vitest/Jest, Playwright)
