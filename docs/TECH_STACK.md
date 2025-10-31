@@ -11,7 +11,7 @@ mindgames という団体のチケット販売 EC システムです。イベン
 ### フレームワーク・言語
 - **Next.js**: React ベースのフルスタックフレームワーク（App Router）
 - **TypeScript**: 型安全性の確保
-- **React 19**: UI ライブラリ
+- **React**: UI ライブラリ（最新安定版を使用）
 
 ### UI・スタイリング
 - **shadcn/ui**: 再利用可能な UI コンポーネント
@@ -109,10 +109,13 @@ mindgames という団体のチケット販売 EC システムです。イベン
 
 ### 認証・認可
 - **Better Auth**: モダンな TypeScript 認証ライブラリ
+  - 2024年10月に Auth.js（旧 NextAuth.js）が Better Auth に統合
+  - TypeScript ネイティブで型安全な認証実装
   - メール/パスワード認証
   - OAuth プロバイダー連携（Google, GitHub など）
   - セッション管理
   - RBAC（ロールベースアクセス制御）対応
+  - 参考: [Auth.js joins Better Auth](https://www.better-auth.com/blog/authjs-joins-better-auth)
 
 ### 決済処理
 - **Stripe**: チケット販売の決済処理
