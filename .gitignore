@@ -1,0 +1,58 @@
+# OS/macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+.Spotlight-V100
+.Trashes
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+
+# Logs
+logs/
+*.log
+*.log.*
+*.pid
+*.seed
+*.pid.lock
+
+# Environment variables
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Build outputs / caches
+dist/
+build/
+out/
+coverage/
+*.tsbuildinfo
+.cache/
+.tmp/
+temp/
+tmp/
+
+# Framework specific
+.next/
+.nuxt/
+.svelte-kit/
+.storybook-out/
+.vercel/
+.netlify/
+
+# Editors/IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Misc
+*.local
+
