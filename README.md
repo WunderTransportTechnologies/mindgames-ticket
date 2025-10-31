@@ -34,6 +34,18 @@ cp .env.example .env.local
 # .env.local を編集して必要な環境変数を設定
 ```
 
+### データベースのセットアップ
+
+Neonデータベースの設定とDrizzle ORMの連携については、[DATABASE_SETUP.md](./docs/DATABASE_SETUP.md) を参照してください。
+
+```bash
+# スキーマをデータベースにプッシュ
+npm run db:push
+
+# Drizzle Studio（データベースGUI）を起動
+npm run db:studio
+```
+
 ### 開発サーバーの起動
 
 ```bash
