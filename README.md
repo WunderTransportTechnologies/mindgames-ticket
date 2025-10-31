@@ -2,6 +2,12 @@
 
 mindgames 団体のイベントチケット販売 EC サイト
 
+## 📋 プロジェクトステータス
+
+**現在のフェーズ**: セットアップ完了、統合フェーズへ移行
+
+今後の実装タスクと優先順位については [docs/NEXT_STEPS.md](./docs/NEXT_STEPS.md) を参照してください。
+
 ## 技術スタック
 
 詳細は [docs/TECH_STACK.md](./docs/TECH_STACK.md) を参照してください。
