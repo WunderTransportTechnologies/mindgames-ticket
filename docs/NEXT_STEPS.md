@@ -65,29 +65,35 @@
 
 ---
 
-#### 2. Stripe SDK のインストール
+#### 2. ~~Stripe SDK のインストール~~ ✅ 完了
 
 **目的**: 決済機能の統合
 
-**タスク詳細**:
-- [ ] Stripe SDK のインストール
+**完了内容**:
+- [x] Stripe SDK のインストール
   ```bash
   npm install stripe @stripe/stripe-js
   ```
-- [ ] Stripe API設定（`src/lib/stripe.ts`）
-- [ ] Webhookエンドポイントの実装
-- [ ] テスト環境での動作確認
-- [ ] 環境変数設定（`STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`）
+- [x] Stripe API設定（`src/lib/stripe.ts`）
+- [x] Checkout Session作成API実装（`src/app/api/checkout/route.ts`）
+- [x] Webhookエンドポイントの実装（`src/app/api/webhooks/stripe/route.ts`）
+- [x] Webhook署名検証の実装
+- [x] テスト環境での動作確認
+- [x] 環境変数設定（`STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`）
+- [x] セットアップガイド作成（`docs/STRIPE_SETUP.md`）
+- [x] ADR作成（`docs/adr/2025-11-01-15-stripe-payment-integration.md`）
 
 **セキュリティ考慮事項**:
-- Webhook署名検証の実装
-- 本番キーとテストキーの適切な管理
-- PCI DSS準拠の確認
+- ✅ Webhook署名検証の実装
+- ✅ 本番キーとテストキーの適切な管理
+- ✅ PCI DSS準拠の確認
 
 **参考ドキュメント**:
 - [Stripe Node.js SDK](https://stripe.com/docs/api/node)
+- [Stripe セットアップガイド](./STRIPE_SETUP.md)
 
-**関連イシュー**: #TBD
+**関連イシュー**: #15
+**関連PR**: #16
 
 ---
 
