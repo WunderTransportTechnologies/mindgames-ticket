@@ -8,11 +8,7 @@ export function UserInfo() {
   const { data: session, isPending } = useSession();
 
   if (isPending) {
-    return (
-      <div className="text-gray-600">
-        Loading...
-      </div>
-    );
+    return <div className="text-gray-600">Loading...</div>;
   }
 
   if (!session) {

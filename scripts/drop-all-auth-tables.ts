@@ -1,5 +1,5 @@
-import { config } from "dotenv";
 import { neon } from "@neondatabase/serverless";
+import { config } from "dotenv";
 
 // .env.localを明示的に読み込む
 config({ path: ".env.local" });

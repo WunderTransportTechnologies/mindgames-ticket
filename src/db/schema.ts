@@ -1,12 +1,5 @@
-import {
-  pgTable,
-  text,
-  timestamp,
-  primaryKey,
-  integer,
-  boolean,
-} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
+import { boolean, integer, pgTable, primaryKey, text, timestamp } from "drizzle-orm/pg-core";
 
 // Users Table - Better Auth用
 export const users = pgTable("user", {
