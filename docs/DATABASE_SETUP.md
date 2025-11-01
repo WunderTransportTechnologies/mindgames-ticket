@@ -49,6 +49,13 @@ cp .env.example .env.local
 DATABASE_URL=postgresql://[user]:[password]@[endpoint]/[dbname]?sslmode=require
 ```
 
+**重要:** `DATABASE_URL` が未設定の場合、以下のコマンドはエラーをスローします：
+```
+Error: DATABASE_URL is required
+```
+
+これは環境変数のバリデーションによる意図的な挙動で、本番環境での設定ミスを防ぐためのものです。必ず `.env.local` に `DATABASE_URL` を設定してから次のステップに進んでください。
+
 ### 3. スキーマをデータベースにプッシュ
 
 ```bash
@@ -96,6 +103,22 @@ npm run db:studio
 - **スキーマ定義**: `src/db/schema.ts`
 - **データベース接続**: `src/db/index.ts`
 - **Drizzle設定**: `drizzle.config.ts`
+
+### 実装済みテーブル
+
+プロジェクトには以下のテーブルが実装されています：
+
+#### 認証関連（Better Auth）
+- **user**: ユーザー基本情報
+  - id, name, email, emailVerified, image, createdAt, updatedAt
+- **account**: OAuth認証情報
+  - id, userId, accountId, providerId, accessToken, refreshToken, idToken, accessTokenExpiresAt, refreshTokenExpiresAt, scope, password, createdAt, updatedAt
+- **session**: セッション管理
+  - id, userId, token, expiresAt, ipAddress, userAgent, createdAt, updatedAt
+- **verification**: メール認証用
+  - id, identifier, value, expiresAt, createdAt, updatedAt
+
+詳細な設定は `docs/GOOGLE_OAUTH_SETUP.md` を参照してください。
 
 ### スキーマの変更手順
 

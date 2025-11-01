@@ -24,6 +24,14 @@
    - ADR（Architecture Decision Records）フレームワーク導入
    - ドキュメント整備
 
+4. **Better Auth 認証基盤**（PR #14）
+   - Better Auth のセットアップ完了
+   - Google OAuth プロバイダー統合
+   - 認証データベーススキーマ実装（user, account, session, verification）
+   - 認証UIコンポーネント実装（SignInButton, SignOutButton, UserInfo）
+   - セッション管理機能
+   - Google OAuth設定ガイド作成
+
 ### 🚧 進行中のタスク
 
 現在該当なし
@@ -34,25 +42,26 @@
 
 ### フェーズ2: 認証・決済・通知基盤の統合
 
-#### 1. Better Auth のセットアップ
+#### 1. ~~Better Auth のセットアップ~~ ✅ 完了
 
 **目的**: ユーザー認証基盤の構築
 
-**タスク詳細**:
-- [ ] Better Auth のインストール
-  ```bash
-  npm install better-auth
-  ```
-- [ ] 認証設定ファイルの作成（`src/lib/auth.ts`）
-- [ ] セッション管理の実装
-- [ ] ログイン・ログアウトAPI実装
-- [ ] ユーザー登録フローの実装
-- [ ] 環境変数設定（`AUTH_SECRET` など）
+**完了内容**:
+- [x] Better Auth のインストール
+- [x] 認証設定ファイルの作成（`src/lib/auth.ts`）
+- [x] Google OAuth プロバイダー統合
+- [x] セッション管理の実装
+- [x] ログイン・ログアウトAPI実装
+- [x] 認証UIコンポーネント実装
+- [x] データベーススキーマ実装
+- [x] 環境変数設定（`BETTER_AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`）
 
 **参考ドキュメント**:
 - [Better Auth 公式ドキュメント](https://www.better-auth.com/)
+- [Google OAuth設定ガイド](./GOOGLE_OAUTH_SETUP.md)
 
-**関連イシュー**: #TBD
+**関連イシュー**: #13
+**関連PR**: #14
 
 ---
 
@@ -238,7 +247,7 @@
 ## 優先順位
 
 ### 最優先（Phase 2）
-1. Better Auth セットアップ
+1. ~~Better Auth セットアップ~~ ✅ 完了
 2. Stripe SDK インストール
 3. Resend SDK インストール
 4. Vercel Blob セットアップ
@@ -261,9 +270,12 @@
 # Database (✅ 設定済み)
 DATABASE_URL=
 
-# Authentication (Phase 2)
-AUTH_SECRET=
-AUTH_URL=
+# Authentication (✅ 設定済み - Phase 2)
+BETTER_AUTH_SECRET=  # Generate with: openssl rand -base64 32
+BETTER_AUTH_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3000  # Used by auth-client.ts
+AUTH_GOOGLE_ID=
+AUTH_GOOGLE_SECRET=
 
 # Stripe (Phase 2)
 STRIPE_SECRET_KEY=
@@ -333,4 +345,4 @@ BLOB_READ_WRITE_TOKEN=
 
 ---
 
-**次のアクション**: Phase 2の最初のタスク「Better Auth のセットアップ」から開始
+**次のアクション**: Phase 2の次のタスク「Stripe SDK のインストール」を開始
