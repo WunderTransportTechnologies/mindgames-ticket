@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 mindgames団体のイベントチケット販売ECシステム。Next.js 15 (App Router) + TypeScript + Drizzle ORM (Neon PostgreSQL) で構築されたフルスタックアプリケーション。
 
-**技術スタック**: Next.js 15, TypeScript, Drizzle ORM, Neon, Better Auth (予定), Stripe (予定), Resend (予定), Vercel Blob (予定)
+**技術スタック**: Next.js 15, TypeScript, Drizzle ORM, Neon, Better Auth ✅, Stripe ✅, Resend (予定), Vercel Blob (予定)
 
 **詳細**: [docs/TECH_STACK.md](docs/TECH_STACK.md), [docs/NEXT_STEPS.md](docs/NEXT_STEPS.md)
 
@@ -71,25 +71,55 @@ npm run db:studio        # Drizzle Studio GUI起動 (https://local.drizzle.studi
 
 **重要**: データベーススキーマ変更時は `npm run db:push` を実行してNeonに反映すること。
 
+### Stripe (決済テスト)
+```bash
+# Stripe CLI で Webhookをローカルで受信
+stripe listen --forward-to localhost:3000/api/webhooks/stripe
+
+# Webhookテストイベント送信
+stripe trigger checkout.session.completed
+```
+
+**セットアップ**: [docs/STRIPE_SETUP.md](docs/STRIPE_SETUP.md) 参照
+
 ## アーキテクチャ
 
 ### ディレクトリ構造
 ```
 src/
-├── app/              # Next.js App Router (ページ・レイアウト)
-├── components/       # Reactコンポーネント (将来的にshadcn/ui含む)
+├── app/                          # Next.js App Router (ページ・レイアウト)
+│   ├── api/                      # APIルート
+│   │   ├── auth/[...all]/        # Better Auth認証エンドポイント
+│   │   ├── checkout/             # Stripe Checkout Session作成API
+│   │   └── webhooks/stripe/      # Stripe Webhook受信API
+│   └── ...
+├── components/                   # Reactコンポーネント
+│   ├── auth/                     # 認証関連コンポーネント
+│   │   ├── sign-in-button.tsx   # ログインボタン
+│   │   ├── sign-out-button.tsx  # ログアウトボタン
+│   │   └── user-info.tsx        # ユーザー情報表示
+│   └── ui/                       # shadcn/ui コンポーネント
 ├── db/
-│   ├── index.ts      # Drizzle クライアント初期化
-│   └── schema.ts     # データベーススキーマ定義
-└── lib/              # ユーティリティ・ヘルパー
-    └── utils.ts      # shadcn/ui用ユーティリティ (cn関数)
+│   ├── index.ts                  # Drizzle クライアント初期化
+│   └── schema.ts                 # データベーススキーマ定義
+└── lib/                          # ユーティリティ・ヘルパー
+    ├── auth.ts                   # Better Auth サーバー設定
+    ├── auth-client.ts            # Better Auth クライアント設定
+    ├── stripe.ts                 # Stripe クライアント設定
+    └── utils.ts                  # shadcn/ui用ユーティリティ (cn関数)
 ```
 
 ### データベース設計
 - **ORM**: Drizzle ORM (型安全なTypeScript ORM)
 - **DB**: Neon (サーバーレスPostgreSQL)
-- **スキーマ**: `src/db/schema.ts` で定義 (現在はusersテーブルのみサンプル実装)
+- **スキーマ**: `src/db/schema.ts` で定義
 - **接続**: `src/db/index.ts` でNeon HTTPクライアント経由で接続
+
+**実装済みテーブル**:
+- `user` - ユーザー情報 (Better Auth)
+- `account` - OAuthプロバイダー情報 (Better Auth)
+- `session` - セッション管理 (Better Auth)
+- `verification` - メール認証トークン (Better Auth)
 
 **スキーマ変更フロー**:
 1. `src/db/schema.ts` を編集
@@ -103,8 +133,21 @@ src/
 
 ### 環境変数
 - `.env.local`: ローカル開発用 (Gitにコミット禁止)
-- `DATABASE_URL`: Neon接続文字列 (必須)
-- 将来追加予定: `AUTH_SECRET`, `STRIPE_SECRET_KEY`, `RESEND_API_KEY`, `BLOB_READ_WRITE_TOKEN`
+
+**必須環境変数**:
+- `DATABASE_URL` - Neon PostgreSQL接続文字列
+- `BETTER_AUTH_SECRET` - Better Auth用シークレット (`openssl rand -base64 32`で生成)
+- `BETTER_AUTH_URL` - アプリケーションURL (開発時: `http://localhost:3000`)
+- `NEXT_PUBLIC_APP_URL` - クライアント側で使用するアプリURL
+- `AUTH_GOOGLE_ID` - Google OAuth クライアントID
+- `AUTH_GOOGLE_SECRET` - Google OAuth クライアントシークレット
+- `STRIPE_SECRET_KEY` - Stripe シークレットキー (テスト: `sk_test_...`)
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` - Stripe 公開可能キー (テスト: `pk_test_...`)
+- `STRIPE_WEBHOOK_SECRET` - Stripe Webhook署名検証用シークレット
+
+**将来追加予定**:
+- `RESEND_API_KEY` - Resend メール送信APIキー
+- `BLOB_READ_WRITE_TOKEN` - Vercel Blob ストレージトークン
 
 ## 開発フロー
 
@@ -263,15 +306,30 @@ cp docs/adr/template.md docs/adr/2025-10-31-<PR番号>-<タイトル>.md
 **ステータス:**
 - `status: ready` / `status: in-progress` / `status: blocked`
 
-## 統合サービス (Phase 2で実装予定)
+## 統合サービス
 
-次のフェーズで統合する外部サービス ([docs/NEXT_STEPS.md](docs/NEXT_STEPS.md)参照):
-1. **Better Auth** - 認証基盤 (`src/lib/auth.ts`に実装予定)
-2. **Stripe** - 決済処理 (`src/lib/stripe.ts`に実装予定)
+### 実装済み ✅
+
+1. **Better Auth** - 認証基盤
+   - 実装: `src/lib/auth.ts` (サーバー), `src/lib/auth-client.ts` (クライアント)
+   - API: `src/app/api/auth/[...all]/route.ts`
+   - 機能: Google OAuth、セッション管理
+   - ドキュメント: [docs/GOOGLE_OAUTH_SETUP.md](docs/GOOGLE_OAUTH_SETUP.md)
+   - ADR: [docs/adr/2025-10-31-14-better-auth-integration.md](docs/adr/2025-10-31-14-better-auth-integration.md)
+
+2. **Stripe** - 決済処理
+   - 実装: `src/lib/stripe.ts`
+   - API: `src/app/api/checkout/route.ts` (Checkout Session), `src/app/api/webhooks/stripe/route.ts` (Webhook)
+   - 機能: Checkout Session作成、Webhook署名検証
+   - ドキュメント: [docs/STRIPE_SETUP.md](docs/STRIPE_SETUP.md)
+   - ADR: [docs/adr/2025-11-01-15-stripe-payment-integration.md](docs/adr/2025-11-01-15-stripe-payment-integration.md)
+
+### 実装予定
+
 3. **Resend** - メール送信 (`src/lib/email.ts`に実装予定)
 4. **Vercel Blob** - ファイルストレージ (イベント画像・QRコード)
 
-各サービスの実装時は、必ずADRを作成すること。
+**重要**: 各サービスの実装時は、必ずADRを作成すること。
 
 ## ペンディング項目
 
