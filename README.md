@@ -40,6 +40,13 @@ cp .env.example .env.local
 # .env.local を編集して必要な環境変数を設定
 ```
 
+**必須の環境変数:**
+- `DATABASE_URL`: Neon PostgreSQL接続文字列（[DATABASE_SETUP.md](./docs/DATABASE_SETUP.md)参照）
+- `BETTER_AUTH_SECRET`: 認証用シークレット（`openssl rand -base64 32`で生成）
+- `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`: Google OAuth認証情報（[GOOGLE_OAUTH_SETUP.md](./docs/GOOGLE_OAUTH_SETUP.md)参照）
+
+詳細な環境変数の一覧は[docs/NEXT_STEPS.md](./docs/NEXT_STEPS.md#環境変数チェックリスト)を参照してください。
+
 ### データベースのセットアップ
 
 Neonデータベースの設定とDrizzle ORMの連携については、[DATABASE_SETUP.md](./docs/DATABASE_SETUP.md) を参照してください。

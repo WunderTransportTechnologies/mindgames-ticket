@@ -271,8 +271,9 @@
 DATABASE_URL=
 
 # Authentication (✅ 設定済み - Phase 2)
-BETTER_AUTH_SECRET=
-BETTER_AUTH_URL=
+BETTER_AUTH_SECRET=  # Generate with: openssl rand -base64 32
+BETTER_AUTH_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3000  # Used by auth-client.ts
 AUTH_GOOGLE_ID=
 AUTH_GOOGLE_SECRET=
 
