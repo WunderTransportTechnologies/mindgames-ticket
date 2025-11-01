@@ -49,6 +49,13 @@ cp .env.example .env.local
 DATABASE_URL=postgresql://[user]:[password]@[endpoint]/[dbname]?sslmode=require
 ```
 
+**重要:** `DATABASE_URL` が未設定の場合、以下のコマンドはエラーをスローします：
+```
+Error: DATABASE_URL is required
+```
+
+これは環境変数のバリデーションによる意図的な挙動で、本番環境での設定ミスを防ぐためのものです。必ず `.env.local` に `DATABASE_URL` を設定してから次のステップに進んでください。
+
 ### 3. スキーマをデータベースにプッシュ
 
 ```bash

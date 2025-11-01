@@ -79,9 +79,27 @@ Better Authで Google OAuth 認証を有効化するための設定手順です�
 
 ```bash
 # .env.local に追加
+BETTER_AUTH_SECRET="ここにシークレットを貼り付け"  # openssl rand -base64 32 で生成
+BETTER_AUTH_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
 AUTH_GOOGLE_ID="ここにクライアントIDを貼り付け"
 AUTH_GOOGLE_SECRET="ここにクライアントシークレットを貼り付け"
 ```
+
+**重要な環境変数:**
+- `BETTER_AUTH_SECRET`: セッション暗号化用のシークレットキー（必須）
+  - 生成方法: `openssl rand -base64 32`
+  - 本番環境では必ず新しいシークレットを生成すること
+- `BETTER_AUTH_URL`: 認証サーバーのベースURL
+- `NEXT_PUBLIC_APP_URL`: クライアント側で使用するアプリケーションのURL
+- `AUTH_GOOGLE_ID`: Google OAuthクライアントID
+- `AUTH_GOOGLE_SECRET`: Google OAuthクライアントシークレット
+
+**セキュリティ注意事項:**
+- これらの環境変数は `.env.local` ファイルに保存し、Gitにコミットしないこと
+- 本番環境では必ず異なるシークレットを使用すること
+- `BETTER_AUTH_SECRET` が未設定の場合、アプリケーションはエラーをスローします
 
 ### 5. 開発サーバーを再起動
 
